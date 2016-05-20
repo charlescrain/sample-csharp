@@ -7,21 +7,8 @@ using Xamarin.Forms;
 
 namespace BlockAppsSDK
 {
-    public class BlockAppsSDK : ContentPage
+    public class BlockAppsSDK 
     {
-        public BlockAppsSDK()
-        {
-            var button = new Button
-            {
-                Text = "Click Me!",
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-            };
-
-            int clicked = 0;
-            button.Clicked += (s, e) => button.Text = "Clicked: " + clicked++;
-
-            Content = button;
-        }
+        
     }
 }
