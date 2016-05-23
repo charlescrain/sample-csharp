@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace BlockAppsSDK.Users
 {
@@ -27,25 +28,43 @@ namespace BlockAppsSDK.Users
             throw new NotImplementedException();
         }
 
+
         //Static Methods
-        public static Account GetAccount(string address)
+        public static async Task<Account> GetAccount(string address)
         {
-            throw new NotImplementedException();
+            if (address == null || address.Equals(""))
+            {
+                throw new ArgumentException("Address is null or empty", nameof(address));
+            }
+            var accountResponse = await Utils.getRequest(BlockAppsSDK.StratoUrl );
+
+            return JsonConvert.DeserializeObject<Account>(accountResponse);
         } 
 
-        public static List<Account> GetAccounts()
+        public static async Task<List<Account>> GetAccounts()
         {
-            throw new NotImplementedException();
+            var addresses = await GetAccountAddresses();
+            List<Task<string>> accountTasks = (from address in addresses
+                select Utils.getRequest(BlockAppsSDK.StratoUrl + "account?address=")).ToList();
+            List<string> accountJsonList = (await Task.WhenAll(accountTasks)).ToList();
+           
+            return accountJsonList.Select(x => JsonConvert.DeserializeObject<Account>(x)).ToList();
         }
 
-        public static List<string> GetAccountAddresses()
+        public static async Task<List<string>> GetAccountAddresses()
         {
-            throw new NotImplementedException();
+            var res = await Utils.getRequest(BlockAppsSDK.BlocUrl + "users");
+            return JsonConvert.DeserializeObject<List<string>>(res);
         }
 
-        public static Account CreateAccount(string name)
+        public static Task<Account> CreateAccount(string name)
         {
-            throw new NotImplementedException();
+            if (name == null || name.Equals(""))
+            {
+                throw new ArgumentException("Address is null or empty", nameof(name));
+            }
+
+
         }
     }
 }
